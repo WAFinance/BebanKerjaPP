@@ -173,6 +173,46 @@ html[data-theme="light"] .chips.big span{color:var(--ink)}
 html[data-theme="light"] .alert{background:#fff6e0;border-color:#efd89b;color:#6b4a00}
 html[data-theme="light"] dialog::backdrop{background:rgba(20,24,31,.45)}
 html[data-theme="light"] .card:hover{border-color:var(--accent)}
+
+/* ===== tampilan mobile ===== */
+@media (max-width:720px){
+  html{-webkit-text-size-adjust:100%}
+  .nav{top:8px;margin:8px auto 0;width:calc(100% - 16px);padding:8px 10px 8px 16px;gap:8px;border-radius:28px;flex-wrap:nowrap;background:rgba(24,24,24,.96);backdrop-filter:none;-webkit-backdrop-filter:none}
+  html[data-theme="light"] .nav{background:rgba(255,255,255,.96)}
+  .brand{font-size:19px}.brand small{display:none}
+  .nav .btn{padding:7px 12px;font-size:12px;min-height:36px}
+  #btnTema .lbl{display:none}
+  #menu{position:fixed;left:0;right:0;bottom:0;z-index:60;justify-content:space-around;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(12,12,12,.97);border-top:1px solid var(--line)}
+  html[data-theme="light"] #menu{background:rgba(255,255,255,.97)}
+  #menu button{flex:1;padding:11px 6px;font-size:14px}
+  main{padding:4px 12px 96px}
+  .hero{padding:18px 14px 12px}.hero h1{font-size:21px}.hero p{font-size:13px}
+  .summary{padding:14px}.totals{gap:6px 22px}.totals .big{font-size:21px}
+  .legend{flex-direction:column;gap:6px}
+  .toolbar{gap:8px}
+  .toolbar .spacer{display:none}
+  .seg{max-width:100%;overflow-x:auto;flex:1 1 100%}.seg button{white-space:nowrap;padding:9px 12px}
+  input[type=search]{flex:1 1 100%;max-width:none;min-width:0}
+  #sort,#tahun,#metodeF{flex:1 1 45%;min-width:0}#btnMuat{flex:1 1 100%}
+  .wrap{max-height:72vh}
+  table{min-width:0;font-size:13px}th,td{padding:7px 8px}
+  th:first-child,td:first-child{min-width:150px;max-width:170px}
+  td button.cell{padding:6px 8px;min-height:32px}
+  .pj-head h2{font-size:19px}.pj-head p{font-size:13px}.pj-head .btn{width:100%}
+  .grid{grid-template-columns:1fr;gap:12px}.poster{height:130px}
+  .acts .btn{flex:1;min-height:40px}
+  dialog{width:100vw;max-width:100vw;max-height:92vh;margin:auto 0 0;border-radius:18px 18px 0 0}
+  .db{max-height:calc(92vh - 78px)}
+  #pBody table{min-width:520px}
+  #dBody table,#dBody tbody,#dBody tr,#dBody td{display:block;min-width:0;width:100%}
+  #dBody thead{display:none}
+  #dBody tr{padding:12px 14px;border-bottom:1px solid var(--line)}
+  #dBody td{border:0;padding:2px 0;text-align:left!important;white-space:normal}
+  #dBody td[data-l]::before{content:attr(data-l);display:block;color:var(--ink-2);font-size:11px;margin-top:4px}
+  #dBody td.nilai{font-weight:700;font-size:15px}
+  .ed{padding:14px}.ed-foot .btn{width:100%}
+  .toast{left:12px;right:12px;bottom:80px;max-width:none}
+}
 </style>
 </head>
 <body>
@@ -406,9 +446,9 @@ function bukaDetail(s, nilai, field, metode, pejabat){
       const tag = v => '<span class="tag" style="background:' + (WARNA[v] || '#999') + '">' + esc(v) + '</span>';
       let h = '<table><thead><tr><th>Kode RUP</th><th>Nama paket</th><th>Jenis</th><th>Metode aktual</th><th>Metode rekomendasi</th><th>Pelaksana</th><th>Pemeriksaan</th><th class="r">Nilai</th></tr></thead><tbody>';
       d.rows.forEach(r => {
-        h += '<tr><td class="num">' + esc(r.kode) + '</td><td>' + esc(r.paket) + '</td><td>' + esc(r.jenis) + '</td><td>' + esc(r.metode) +
-          '</td><td>' + esc(r.rekomendasi) + '</td><td>' + tag(r.pelaksana) + '</td><td title="' + esc(r.catatan) + '">' + tag(r.status) +
-          '</td><td class="r num">' + fmt(r.nilai) + '</td></tr>';
+        h += '<tr><td class="num" data-l="Kode RUP">' + esc(r.kode) + '</td><td data-l="Nama paket"><b>' + esc(r.paket) + '</b></td><td data-l="Jenis">' + esc(r.jenis) + '</td><td data-l="Metode aktual">' + esc(r.metode) +
+          '</td><td data-l="Metode rekomendasi">' + esc(r.rekomendasi) + '</td><td data-l="Pelaksana">' + tag(r.pelaksana) + '</td><td data-l="Pemeriksaan" title="' + esc(r.catatan) + '">' + tag(r.status) +
+          '</td><td class="r num nilai" data-l="Nilai">' + fmt(r.nilai) + '</td></tr>';
       });
       $('#dBody').innerHTML = h + '</tbody></table>';
     })
@@ -562,7 +602,7 @@ $('#eSimpan').addEventListener('click', () => {
 
 function setTema(t){
   document.documentElement.dataset.theme = t;
-  $('#btnTema').textContent = t === 'dark' ? '☀ Terang' : '☾ Gelap';
+  $('#btnTema').innerHTML = t === 'dark' ? '☀<span class="lbl"> Terang</span>' : '☾<span class="lbl"> Gelap</span>';
   try { localStorage.setItem('tema', t); } catch (e) {}
 }
 $('#btnTema').addEventListener('click', () => setTema(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
